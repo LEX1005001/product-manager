@@ -38,4 +38,10 @@ class AuthenticatedSessionController extends Controller
         return redirect('/')
             ->withoutCookie('remember_web');
     }
+
+    protected function redirectTo()
+    {
+        // После входа перенаправляем в магазин
+        return route('shop.index');
+    }
 }

@@ -22,16 +22,13 @@ Route::middleware('guest')->group(function () {
 
 // Защищенные маршруты
 Route::middleware('auth')->group(function () {
-    // Основной маршрут магазина
+    // Главный маршрут магазина
     Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
 
-    // Корзина
-    Route::prefix('cart')->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add');
-        Route::delete('/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
-        Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-    });
+    // Маршруты корзины
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
 
     // Профиль
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,8 +37,12 @@ Route::middleware('auth')->group(function () {
     // Выход
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Админка (если нужно)
+    // Админка
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        // Список товаров в админке
+        Route::get('/products/list', [ProductController::class, 'adminIndex'])->name('products.list');
+
+        // Стандартный resource с исключением index
         Route::resource('products', ProductController::class)->except(['index']);
     });
 });

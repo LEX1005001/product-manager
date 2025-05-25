@@ -1,30 +1,19 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-between mb-4">
-        <div class="col-md-6">
-            <h2>Products</h2>
-        </div>
-        <div class="col-md-6 text-end">
-            <a href="{{ route('admin.products.create') }}" class="btn btn-success">Create Product</a>
-        </div>
-    </div>
+    <h1>Список товаров</h1>
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3">
+        Добавить товар
+    </a>
 
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    <table class="table table-striped">
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Actions</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -32,16 +21,11 @@
             <tr>
                 <td>{{ $product->id }}</td>
                 <td>{{ $product->name }}</td>
-                <td>${{ number_format($product->price, 2) }}</td>
-                <td>{{ $product->quantity }}</td>
+                <td>{{ $product->price }}</td>
                 <td>
-                    <a href="{{ route('admin.products.show', $product) }}" class="btn btn-info btn-sm">View</a>
-                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-primary btn-sm">Edit</a>
-                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
+                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">
+                        Редактировать
+                    </a>
                 </td>
             </tr>
             @endforeach

@@ -8,7 +8,18 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
-        return view('shop.index', compact('products'));
+        return view('shop.index', ['products' => Product::all()]);
+    }
+
+    public function checkout()
+    {
+        return redirect()->route('shop.index')->with('success', 'Заказ оформлен!');
+    }
+
+    public function adminIndex()
+    {
+        return view('admin.products.index', [
+            'products' => Product::withTrashed()->get()
+        ]);
     }
 }
