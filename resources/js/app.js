@@ -1,7 +1,11 @@
-import './bootstrap';
+import "./bootstrap";
 
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+// Дополнительные скрипты для корзины
+document.addEventListener("DOMContentLoaded", function () {
+    // Логика для обновления количества товаров
+    document.querySelectorAll(".update-quantity").forEach((button) => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+        });
+    });
+});
