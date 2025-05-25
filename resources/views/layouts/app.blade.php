@@ -4,24 +4,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }} - @yield('title')</title>
-
-    <!-- Загрузка Vite assets -->
+    <title>{{ config('app.name', 'Laravel') }} | @yield('title')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    @stack('styles')
 </head>
 
 <body>
     <div id="app">
         @include('layouts.navigation')
 
-        <main class="py-4 container">
+        <main class="container py-4">
             @yield('content')
         </main>
     </div>
-
-    @stack('scripts')
 </body>
 
 </html>

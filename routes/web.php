@@ -6,43 +6,56 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
-// Главная страница - редирект на вход
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Главная страница - редирект на магазин
+Route::redirect('/', '/shop');
 
-// Гостевые маршруты
+// Гостевые маршруты (только для неавторизованных)
 Route::middleware('guest')->group(function () {
+    // Аутентификация
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+
+    // Регистрация
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 });
 
-// Защищенные маршруты
+// Защищенные маршруты (только для авторизованных)
 Route::middleware('auth')->group(function () {
-    // Главный маршрут магазина
+    // Магазин
     Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
 
-    // Маршруты корзины
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::delete('/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+    // Корзина
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add');
+        Route::delete('/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    });
 
-    // Профиль
+    // Профиль пользователя
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // Выход
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Админка
+    // Админ-панель
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
-        // Список товаров в админке
-        Route::get('/products/list', [ProductController::class, 'adminIndex'])->name('products.list');
+        // Управление товарами
+        Route::resource('products', AdminProductController::class)->except(['show']);
 
-        // Стандартный resource с исключением index
-        Route::resource('products', ProductController::class)->except(['index']);
+        // Дополнительные админ-маршруты можно добавить здесь
     });
 });
+
+// Статические маршруты
+Route::get('/about', function () {
+    return view('static.about');
+})->name('about');
+
+Route::get('/contacts', function () {
+    return view('static.contacts');
+})->name('contacts');
